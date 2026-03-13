@@ -1,0 +1,5 @@
+HLL-001|Grand Auditorium|AUDITORIUM|1000|300.00|Spacious main auditorium for large conferences and events
+HLL-002|Crystal Banquet Hall|BANQUET_HALL|300|100.00|Elegant banquet hall ideal for weddings and dinners
+HLL-003|Meeting Room A|MEETING_ROOM|30|50.00|Cosy meeting room with projector and whiteboard
+HLL-004|Meeting Room B|MEETING_ROOM|30|50.00|Meeting room with video conferencing facilities
+HLL-005|Sagarmatha|AUDITORIUM|1000|300.00|Big Hall

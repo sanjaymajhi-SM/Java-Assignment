@@ -1,0 +1,6 @@
+STF-001|admin|admin123|admin@hallsymphony.com|0100000001|ADMIN|true|Administration
+STF-002|manager|manager123|manager@hallsymphony.com|0100000002|MANAGER|true|Management
+STF-003|scheduler1|sched123|scheduler1@hallsymphony.com|0100000003|SCHEDULER|true|Hall Operations
+USR-001|john_doe|john123|john@email.com|0123456789|CUSTOMER|true|123 Main Street Kuala Lumpur|Acme Corp
+USR-002|jane_smith|jane123|jane@email.com|0187654321|CUSTOMER|true|456 Palm Avenue Petaling Jaya|TechSoft Sdn Bhd
+USR-006|Sanjay|sanjay|sanjay@gmail.com|9700000|CUSTOMER|true|KTM|
