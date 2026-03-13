@@ -29,6 +29,7 @@ public class CustomerDashboard extends JFrame {
     private DefaultTableModel hallModel;
     private DefaultTableModel bookModel;
     private DefaultTableModel issueModel;
+    private JComboBox<String>  bookCombo;
 
     public CustomerDashboard(Customer me) {
         this.me = me;
@@ -46,8 +47,8 @@ public class CustomerDashboard extends JFrame {
     private void buildUI() {
         setLayout(new BorderLayout());
         add(UIHelper.makeHeader("Customer Portal",
-            "Welcome, " + me.getUsername() + "   |   ID: " + me.getUserId()),
-            BorderLayout.NORTH);
+                        "Welcome, " + me.getUsername() + "   |   ID: " + me.getUserId()),
+                BorderLayout.NORTH);
 
         JTabbedPane tabs = new JTabbedPane();
         tabs.setFont(new Font("Arial", Font.BOLD, 13));
@@ -55,6 +56,10 @@ public class CustomerDashboard extends JFrame {
         tabs.addTab("  My Bookings  ",         buildBookingsTab());
         tabs.addTab("  Raise an Issue  ",      buildIssueTab());
         tabs.addTab("  My Profile  ",          buildProfileTab());
+        // Refresh issue tab booking combo whenever user switches to it
+        tabs.addChangeListener(e -> {
+            if (tabs.getSelectedIndex() == 2) refreshBookCombo();
+        });
         add(tabs, BorderLayout.CENTER);
 
         JPanel bar = new JPanel(new FlowLayout(FlowLayout.RIGHT, 14, 8));
@@ -86,11 +91,11 @@ public class CustomerDashboard extends JFrame {
         JButton btnBook    = UIHelper.primaryBtn("Book Selected Hall");
 
         JPanel toolbar = UIHelper.toolbar(
-            UIHelper.boldLabel("From:"), startF,
-            UIHelper.boldLabel("To:"), endF,
-            btnAvail, btnAll,
-            UIHelper.sep(),
-            btnBook
+                UIHelper.boldLabel("From:"), startF,
+                UIHelper.boldLabel("To:"), endF,
+                btnAvail, btnAll,
+                UIHelper.sep(),
+                btnBook
         );
         root.add(toolbar, BorderLayout.NORTH);
 
@@ -122,8 +127,8 @@ public class CustomerDashboard extends JFrame {
                             && s.getEndDateTime().compareTo(end) >= 0) { ok = true; break; }
                 }
                 if (ok) hallModel.addRow(new Object[]{
-                    h.getHallId(), h.getHallName(), h.getHallType(),
-                    h.getCapacity(), String.format("%.2f", h.getRatePerHour()), h.getDescription()
+                        h.getHallId(), h.getHallName(), h.getHallType(),
+                        h.getCapacity(), String.format("%.2f", h.getRatePerHour()), h.getDescription()
                 });
             }
             if (hallModel.getRowCount() == 0)
@@ -144,8 +149,8 @@ public class CustomerDashboard extends JFrame {
         hallModel.setRowCount(0);
         for (Hall h : hallFM.getAllHalls()) {
             hallModel.addRow(new Object[]{
-                h.getHallId(), h.getHallName(), h.getHallType(),
-                h.getCapacity(), String.format("%.2f", h.getRatePerHour()), h.getDescription()
+                    h.getHallId(), h.getHallName(), h.getHallType(),
+                    h.getCapacity(), String.format("%.2f", h.getRatePerHour()), h.getDescription()
             });
         }
     }
@@ -160,7 +165,7 @@ public class CustomerDashboard extends JFrame {
         JPanel hdr = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 8));
         hdr.setBackground(UIHelper.DARK_BLUE);
         JLabel hlbl = new JLabel(hall.getHallName() + "  |  " + hall.getHallType()
-            + "  |  RM " + String.format("%.2f", hall.getRatePerHour()) + "/hr");
+                + "  |  RM " + String.format("%.2f", hall.getRatePerHour()) + "/hr");
         hlbl.setFont(new Font("Arial", Font.BOLD, 14));
         hlbl.setForeground(Color.WHITE);
         hdr.add(hlbl);
@@ -182,7 +187,7 @@ public class CustomerDashboard extends JFrame {
         eventA.setBorder(BorderFactory.createLineBorder(new Color(180,200,230)));
 
         JComboBox<String> payCombo = new JComboBox<>(new String[]{
-            "Cash","Credit / Debit Card","Online Transfer"});
+                "Cash","Credit / Debit Card","Online Transfer"});
 
         JLabel costLbl = new JLabel("  Estimated Cost: RM 0.00");
         costLbl.setFont(new Font("Arial", Font.BOLD, 14));
@@ -190,7 +195,7 @@ public class CustomerDashboard extends JFrame {
 
         Runnable recalc = () -> {
             double c = BookingFileManager.calculateCost(
-                startF.getText().trim(), endF.getText().trim(), hall.getRatePerHour());
+                    startF.getText().trim(), endF.getText().trim(), hall.getRatePerHour());
             costLbl.setText("  Estimated Cost: RM " + String.format("%.2f", c));
         };
         startF.addActionListener(ev -> recalc.run());
@@ -227,13 +232,13 @@ public class CustomerDashboard extends JFrame {
             if (cost <= 0) { UIHelper.err(dlg,"Invalid dates – end must be after start."); return; }
 
             if (!UIHelper.confirm(dlg, String.format(
-                "Confirm Booking?\n\nHall    : %s\nFrom    : %s\nTo      : %s\nEvent   : %s\n\nTotal   : RM %.2f\nPayment : %s",
-                hall.getHallName(), start, end, event, cost, method))) return;
+                    "Confirm Booking?\n\nHall    : %s\nFrom    : %s\nTo      : %s\nEvent   : %s\n\nTotal   : RM %.2f\nPayment : %s",
+                    hall.getHallName(), start, end, event, cost, method))) return;
 
             Booking b = new Booking(
-                bookFM.generateBookingId(), me.getUserId(), hall.getHallId(),
-                start, end, event, "CONFIRMED", cost, method, "PAID",
-                LocalDate.now().toString());
+                    bookFM.generateBookingId(), me.getUserId(), hall.getHallId(),
+                    start, end, event, "CONFIRMED", cost, method, "PAID",
+                    LocalDate.now().toString());
             bookFM.addBooking(b);
             refreshBookTable("All");
             dlg.dispose();
@@ -250,29 +255,29 @@ public class CustomerDashboard extends JFrame {
         r.setLayout(new BorderLayout(6,6));
 
         String txt =
-            "==========================================\n"
-          + "         HALL SYMPHONY INC.\n"
-          + "           BOOKING RECEIPT\n"
-          + "==========================================\n"
-          + "Booking ID   : " + b.getBookingId()        + "\n"
-          + "Customer     : " + me.getUsername()         + "\n"
-          + "------------------------------------------\n"
-          + "Hall         : " + hall.getHallName()       + "\n"
-          + "Type         : " + hall.getHallType()       + "\n"
-          + "Event        : " + b.getEventDescription()  + "\n"
-          + "From         : " + b.getStartDateTime()     + "\n"
-          + "To           : " + b.getEndDateTime()       + "\n"
-          + "Rate /hr     : RM "+ String.format("%.2f", hall.getRatePerHour()) + "\n"
-          + "------------------------------------------\n"
-          + "TOTAL PAID   : RM " + String.format("%.2f", b.getTotalCost()) + "\n"
-          + "Payment      : " + b.getPaymentMethod()     + "\n"
-          + "Pay Status   : " + b.getPaymentStatus()     + "\n"
-          + "------------------------------------------\n"
-          + "Booked On    : " + b.getCreatedDate()       + "\n"
-          + "Status       : " + b.getStatus()            + "\n"
-          + "==========================================\n"
-          + "  Thank you for choosing Hall Symphony!\n"
-          + "==========================================";
+                "==========================================\n"
+                        + "         HALL SYMPHONY INC.\n"
+                        + "           BOOKING RECEIPT\n"
+                        + "==========================================\n"
+                        + "Booking ID   : " + b.getBookingId()        + "\n"
+                        + "Customer     : " + me.getUsername()         + "\n"
+                        + "------------------------------------------\n"
+                        + "Hall         : " + hall.getHallName()       + "\n"
+                        + "Type         : " + hall.getHallType()       + "\n"
+                        + "Event        : " + b.getEventDescription()  + "\n"
+                        + "From         : " + b.getStartDateTime()     + "\n"
+                        + "To           : " + b.getEndDateTime()       + "\n"
+                        + "Rate /hr     : RM "+ String.format("%.2f", hall.getRatePerHour()) + "\n"
+                        + "------------------------------------------\n"
+                        + "TOTAL PAID   : RM " + String.format("%.2f", b.getTotalCost()) + "\n"
+                        + "Payment      : " + b.getPaymentMethod()     + "\n"
+                        + "Pay Status   : " + b.getPaymentStatus()     + "\n"
+                        + "------------------------------------------\n"
+                        + "Booked On    : " + b.getCreatedDate()       + "\n"
+                        + "Status       : " + b.getStatus()            + "\n"
+                        + "==========================================\n"
+                        + "  Thank you for choosing Hall Symphony!\n"
+                        + "==========================================";
 
         JTextArea area = new JTextArea(txt);
         area.setFont(new Font("Courier New", Font.PLAIN, 13));
@@ -297,21 +302,21 @@ public class CustomerDashboard extends JFrame {
         root.setBackground(UIHelper.LIGHT_BG);
 
         JComboBox<String> statusCombo = new JComboBox<>(
-            new String[]{"All","CONFIRMED","COMPLETED","CANCELLED"});
+                new String[]{"All","CONFIRMED","COMPLETED","CANCELLED"});
         JButton btnFilter  = UIHelper.secondaryBtn("Filter");
         JButton btnShowAll = UIHelper.secondaryBtn("Show All");
         JButton btnCancel  = UIHelper.dangerBtn("Cancel Booking");
         JButton btnReceipt = UIHelper.secondaryBtn("View Receipt");
 
         root.add(UIHelper.toolbar(
-            UIHelper.boldLabel("Status:"), statusCombo,
-            btnFilter, btnShowAll,
-            UIHelper.sep(),
-            btnCancel, btnReceipt
+                UIHelper.boldLabel("Status:"), statusCombo,
+                btnFilter, btnShowAll,
+                UIHelper.sep(),
+                btnCancel, btnReceipt
         ), BorderLayout.NORTH);
 
         String[] cols = {"Booking ID","Hall","Start Date/Time","End Date/Time",
-                         "Total (RM)","Status","Payment","Event"};
+                "Total (RM)","Status","Payment","Event"};
         bookModel = new DefaultTableModel(cols, 0) {
             public boolean isCellEditable(int r, int c) { return false; }
         };
@@ -339,9 +344,9 @@ public class CustomerDashboard extends JFrame {
                 long daysLeft    = ChronoUnit.DAYS.between(LocalDate.now(), evDay);
                 if (daysLeft < 3) {
                     UIHelper.err(this,
-                        "Cancellation not allowed!\n\n"
-                        + "Bookings must be cancelled at least 3 days before the event.\n"
-                        + "Your event is in " + daysLeft + " day(s) – too close to cancel.");
+                            "Cancellation not allowed!\n\n"
+                                    + "Bookings must be cancelled at least 3 days before the event.\n"
+                                    + "Your event is in " + daysLeft + " day(s) – too close to cancel.");
                     return;
                 }
             } catch (Exception ignored) {}
@@ -375,12 +380,12 @@ public class CustomerDashboard extends JFrame {
             if (!filter.equals("All") && !b.getStatus().equals(filter)) continue;
             Hall h = hallFM.findById(b.getHallId());
             bookModel.addRow(new Object[]{
-                b.getBookingId(),
-                h != null ? h.getHallName() : b.getHallId(),
-                b.getStartDateTime(), b.getEndDateTime(),
-                String.format("%.2f", b.getTotalCost()),
-                b.getStatus(), b.getPaymentStatus(),
-                b.getEventDescription()
+                    b.getBookingId(),
+                    h != null ? h.getHallName() : b.getHallId(),
+                    b.getStartDateTime(), b.getEndDateTime(),
+                    String.format("%.2f", b.getTotalCost()),
+                    b.getStatus(), b.getPaymentStatus(),
+                    b.getEventDescription()
             });
         }
     }
@@ -397,21 +402,23 @@ public class CustomerDashboard extends JFrame {
         JPanel formPanel = new JPanel(new BorderLayout());
         formPanel.setBackground(UIHelper.LIGHT_BG);
         formPanel.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(UIHelper.MID_BLUE),
-            "  Submit a New Issue  "));
+                BorderFactory.createLineBorder(UIHelper.MID_BLUE),
+                "  Submit a New Issue  "));
 
         JPanel form = new JPanel(new GridBagLayout());
         form.setOpaque(false);
         form.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
 
-        // Only show confirmed bookings
-        JComboBox<String> bookCombo = new JComboBox<>();
+        // Show CONFIRMED and COMPLETED bookings (not cancelled)
+        bookCombo = new JComboBox<>();
         for (Booking b : bookFM.getByCustomer(me.getUserId())) {
-            if (b.getStatus().equals("CONFIRMED")) {
+            String st = b.getStatus();
+            if (st.equals("CONFIRMED") || st.equals("COMPLETED") || st.equals("PAID")) {
                 Hall h = hallFM.findById(b.getHallId());
                 bookCombo.addItem(b.getBookingId() + " | "
-                    + (h != null ? h.getHallName() : b.getHallId())
-                    + " | " + b.getStartDateTime());
+                        + (h != null ? h.getHallName() : b.getHallId())
+                        + " | " + b.getStartDateTime()
+                        + " [" + st + "]");
             }
         }
 
@@ -463,7 +470,7 @@ public class CustomerDashboard extends JFrame {
             if (desc.isEmpty()) { UIHelper.err(this,"Please describe the issue."); return; }
             String bookingId = ((String)bookCombo.getSelectedItem()).split(" \\| ")[0];
             Issue iss = new Issue(issueFM.generateIssueId(), me.getUserId(), bookingId,
-                desc, "", "", "IN_PROGRESS", LocalDate.now().toString());
+                    desc, "", "", "IN_PROGRESS", LocalDate.now().toString());
             issueFM.addIssue(iss);
             descA.setText("");
             refreshIssueTable();
@@ -480,13 +487,13 @@ public class CustomerDashboard extends JFrame {
             Booking b  = bookFM.findById(i.getBookingId());
             Hall    h  = (b != null) ? hallFM.findById(b.getHallId()) : null;
             String desc = i.getDescription().length() > 45
-                ? i.getDescription().substring(0,45) + "…" : i.getDescription();
+                    ? i.getDescription().substring(0,45) + "…" : i.getDescription();
             issueModel.addRow(new Object[]{
-                i.getIssueId(), i.getBookingId(),
-                h != null ? h.getHallName() : "—",
-                desc, i.getStatus(),
-                i.getManagerResponse().isEmpty() ? "(Pending response)" : i.getManagerResponse(),
-                i.getCreatedDate()
+                    i.getIssueId(), i.getBookingId(),
+                    h != null ? h.getHallName() : "—",
+                    desc, i.getStatus(),
+                    i.getManagerResponse().isEmpty() ? "(Pending response)" : i.getManagerResponse(),
+                    i.getCreatedDate()
             });
         }
     }
@@ -501,7 +508,7 @@ public class CustomerDashboard extends JFrame {
         JPanel form = new JPanel(new GridBagLayout());
         form.setBackground(UIHelper.LIGHT_BG);
         form.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(UIHelper.MID_BLUE), "  Update My Profile  "));
+                BorderFactory.createLineBorder(UIHelper.MID_BLUE), "  Update My Profile  "));
         form.setPreferredSize(new Dimension(480, 360));
 
         JTextField     emailF   = UIHelper.makeField(26); emailF.setText(me.getEmail());
@@ -513,14 +520,14 @@ public class CustomerDashboard extends JFrame {
         UIHelper.addRow(form, "Email :",            emailF, 0);
         UIHelper.addRow(form, "Phone :",            phoneF, 1);
         UIHelper.addRow(form, "Address :",          addrF,  2);
-        UIHelper.addRow(form, "New Password :",     passF,  4);
-        UIHelper.addRow(form, "Confirm Password :", confF,  5);
+        UIHelper.addRow(form, "New Password :",     passF,  3);
+        UIHelper.addRow(form, "Confirm Password :", confF,  4);
 
         JButton btnSave = UIHelper.primaryBtn("Save Changes");
         JPanel fbtn = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 0));
         fbtn.setOpaque(false);
         fbtn.add(btnSave);
-        GridBagConstraints bc = UIHelper.gbcWide(6);
+        GridBagConstraints bc = UIHelper.gbcWide(5);
         bc.insets = new Insets(18, 8, 8, 8);
         form.add(fbtn, bc);
 
@@ -542,5 +549,20 @@ public class CustomerDashboard extends JFrame {
         });
 
         return outer;
+    }
+
+    private void refreshBookCombo() {
+        if (bookCombo == null) return;
+        bookCombo.removeAllItems();
+        for (Booking b : bookFM.getByCustomer(me.getUserId())) {
+            String st = b.getStatus();
+            if (st.equals("CONFIRMED") || st.equals("COMPLETED") || st.equals("PAID")) {
+                Hall h = hallFM.findById(b.getHallId());
+                bookCombo.addItem(b.getBookingId() + " | "
+                        + (h != null ? h.getHallName() : b.getHallId())
+                        + " | " + b.getStartDateTime()
+                        + " [" + st + "]");
+            }
+        }
     }
 }
