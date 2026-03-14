@@ -46,8 +46,8 @@ public class AdminDashboard extends JFrame {
     private void buildUI() {
         setLayout(new BorderLayout());
         add(UIHelper.makeHeader("Administrator Dashboard",
-            "Logged in as: " + me.getUsername() + "   |   Role: ADMIN"),
-            BorderLayout.NORTH);
+                        "Logged in as: " + me.getUsername() + "   |   Role: ADMIN"),
+                BorderLayout.NORTH);
 
         JTabbedPane tabs = new JTabbedPane();
         tabs.setFont(new Font("Arial", Font.BOLD, 13));
@@ -82,10 +82,10 @@ public class AdminDashboard extends JFrame {
         JButton btnDelete  = UIHelper.dangerBtn("Delete Selected");
 
         root.add(UIHelper.toolbar(
-            UIHelper.boldLabel("Filter:"), filterF,
-            btnSearch, btnAll,
-            UIHelper.sep(),
-            btnAdd, btnEdit, btnDelete
+                UIHelper.boldLabel("Filter:"), filterF,
+                btnSearch, btnAll,
+                UIHelper.sep(),
+                btnAdd, btnEdit, btnDelete
         ), BorderLayout.NORTH);
 
         String[] cols = {"Staff ID","Username","Email","Phone","Department","Active"};
@@ -133,9 +133,9 @@ public class AdminDashboard extends JFrame {
             if (f.isEmpty() || s.getUsername().toLowerCase().contains(f)
                     || s.getEmail().toLowerCase().contains(f)) {
                 schedModel.addRow(new Object[]{
-                    s.getUserId(), s.getUsername(), s.getEmail(),
-                    s.getPhone(), s.getDepartment(),
-                    s.isActive() ? "Yes" : "No"
+                        s.getUserId(), s.getUsername(), s.getEmail(),
+                        s.getPhone(), s.getDepartment(),
+                        s.isActive() ? "Yes" : "No"
                 });
             }
         }
@@ -213,7 +213,7 @@ public class AdminDashboard extends JFrame {
                 if (pass.length() < 6) { UIHelper.err(dlg,"Password must be >= 6 chars."); return; }
                 if (userFM.usernameExists(uname)) { UIHelper.err(dlg,"Username already exists."); return; }
                 Staff ns = new Staff(userFM.generateUserId("SCHEDULER"),
-                    uname, pass, email, phone, "SCHEDULER", dept, true);
+                        uname, pass, email, phone, "SCHEDULER", dept, true);
                 userFM.addUser(ns);
                 UIHelper.ok(dlg,"Scheduler \"" + uname + "\" added.");
             }
@@ -232,7 +232,7 @@ public class AdminDashboard extends JFrame {
         root.setBackground(UIHelper.LIGHT_BG);
 
         JTextField filterF = UIHelper.makeField(20);
-        filterF.setToolTipText("Filter by username, email, or company");
+        filterF.setToolTipText("Filter by username or email");
 
         JButton btnSearch  = UIHelper.secondaryBtn("Search");
         JButton btnAll     = UIHelper.secondaryBtn("Show All");
@@ -240,13 +240,13 @@ public class AdminDashboard extends JFrame {
         JButton btnDelete  = UIHelper.dangerBtn("Delete User");
 
         root.add(UIHelper.toolbar(
-            UIHelper.boldLabel("Filter:"), filterF,
-            btnSearch, btnAll,
-            UIHelper.sep(),
-            btnBlock, btnDelete
+                UIHelper.boldLabel("Filter:"), filterF,
+                btnSearch, btnAll,
+                UIHelper.sep(),
+                btnBlock, btnDelete
         ), BorderLayout.NORTH);
 
-        String[] cols = {"User ID","Username","Email","Phone","Company","Status"};
+        String[] cols = {"User ID","Username","Email","Phone","Status"};
         userModel = new DefaultTableModel(cols, 0) {
             public boolean isCellEditable(int r, int c) { return false; }
         };
@@ -293,12 +293,11 @@ public class AdminDashboard extends JFrame {
         for (User u : userFM.getByRole("CUSTOMER")) {
             Customer c = (Customer) u;
             if (f.isEmpty() || c.getUsername().toLowerCase().contains(f)
-                    || c.getEmail().toLowerCase().contains(f)
-                    || c.getCompany().toLowerCase().contains(f)) {
+                    || c.getEmail().toLowerCase().contains(f)) {
                 userModel.addRow(new Object[]{
-                    c.getUserId(), c.getUsername(), c.getEmail(),
-                    c.getPhone(), c.getCompany(),
-                    c.isActive() ? "Active" : "BLOCKED"
+                        c.getUserId(), c.getUsername(), c.getEmail(),
+                        c.getPhone(),
+                        c.isActive() ? "Active" : "BLOCKED"
                 });
             }
         }
@@ -314,15 +313,15 @@ public class AdminDashboard extends JFrame {
         JTextField searchF = UIHelper.makeField(18);
         searchF.setToolTipText("Search by customer name or booking ID");
         JComboBox<String> statusC = new JComboBox<>(
-            new String[]{"All","Upcoming (CONFIRMED)","Past (COMPLETED)","CANCELLED"});
+                new String[]{"All","Upcoming (CONFIRMED)","Past (COMPLETED)","CANCELLED"});
 
         JButton btnFilter = UIHelper.secondaryBtn("Filter");
         JButton btnAll    = UIHelper.secondaryBtn("Show All");
 
         root.add(UIHelper.toolbar(
-            UIHelper.boldLabel("Search:"), searchF,
-            UIHelper.boldLabel("  Status:"), statusC,
-            btnFilter, btnAll
+                UIHelper.boldLabel("Search:"), searchF,
+                UIHelper.boldLabel("  Status:"), statusC,
+                btnFilter, btnAll
         ), BorderLayout.NORTH);
 
         String[] cols = {"Booking ID","Customer","Hall","Start","End","Total (RM)","Payment","Status"};
@@ -335,7 +334,7 @@ public class AdminDashboard extends JFrame {
         refreshBookTable("All","");
 
         btnFilter.addActionListener(e ->
-            refreshBookTable((String)statusC.getSelectedItem(), searchF.getText().trim()));
+                refreshBookTable((String)statusC.getSelectedItem(), searchF.getText().trim()));
         btnAll.addActionListener(e -> {
             searchF.setText(""); statusC.setSelectedIndex(0); refreshBookTable("All","");
         });
@@ -362,10 +361,10 @@ public class AdminDashboard extends JFrame {
             if (!s.isEmpty() && !cname.toLowerCase().contains(s)
                     && !b.getBookingId().toLowerCase().contains(s)) continue;
             bookModel.addRow(new Object[]{
-                b.getBookingId(), cname, hname,
-                b.getStartDateTime(), b.getEndDateTime(),
-                String.format("%.2f", b.getTotalCost()),
-                b.getPaymentStatus(), b.getStatus()
+                    b.getBookingId(), cname, hname,
+                    b.getStartDateTime(), b.getEndDateTime(),
+                    String.format("%.2f", b.getTotalCost()),
+                    b.getPaymentStatus(), b.getStatus()
             });
         }
     }

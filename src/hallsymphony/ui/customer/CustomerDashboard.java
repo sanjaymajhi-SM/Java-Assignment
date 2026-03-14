@@ -78,11 +78,13 @@ public class CustomerDashboard extends JFrame {
         JPanel root = new JPanel(new BorderLayout(0, 0));
         root.setBackground(UIHelper.LIGHT_BG);
 
-        // filter bar
+        // filter bar - default to today 09:00 -> 13:00
+        String todayStart = java.time.LocalDate.now().toString() + " 09:00";
+        String todayEnd   = java.time.LocalDate.now().toString() + " 13:00";
         JTextField startF = UIHelper.makeField(17);
         JTextField endF   = UIHelper.makeField(17);
-        startF.setText("2025-08-01 09:00");
-        endF.setText("2025-08-01 13:00");
+        startF.setText(todayStart);
+        endF.setText(todayEnd);
         startF.setToolTipText("yyyy-MM-dd HH:mm");
         endF.setToolTipText("yyyy-MM-dd HH:mm");
 

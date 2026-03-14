@@ -106,7 +106,7 @@ public class RegisterPanel extends JPanel {
         // company is passed as empty string since we removed that field
         String newId = userFM.generateUserId("CUSTOMER");
         Customer newCustomer = new Customer(newId, username, password,
-                email, phone, address, "", true);
+                email, phone, address, true);
         userFM.addUser(newCustomer);
 
         UIHelper.showSuccess(this, "Account created! You can now log in.");

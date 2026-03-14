@@ -3,3 +3,4 @@ STF-002|manager|manager123|manager@hallsymphony.com|0100000002|MANAGER|true|Mana
 STF-003|scheduler1|sched123|scheduler1@hallsymphony.com|0100000003|SCHEDULER|true|Hall Operations
 USR-006|Sanjay|sanjay|sanjay@gmail.com|9700000|CUSTOMER|true|KTM|
 USR-007|Diva|diva123|diva@gmail.com|9812121212|CUSTOMER|true|KTM|
+STF-006|Preeti|preeti123|preeti@gmail.com|9800000000|SCHEDULER|true|Hall Operations

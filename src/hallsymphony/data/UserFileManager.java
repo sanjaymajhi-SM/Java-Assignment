@@ -55,9 +55,8 @@ public class UserFileManager {
         // Build the correct subclass based on role
         if (role.equals("CUSTOMER")) {
             String address = FileHelper.getField(f, 7);
-            String company = FileHelper.getField(f, 8);
             return new Customer(userId, username, password, email, phone,
-                                address, company, active);
+                                address, active);
         } else {
             // ADMIN, SCHEDULER, MANAGER all use Staff
             String department = FileHelper.getField(f, 7);
@@ -162,7 +161,7 @@ public class UserFileManager {
 
         if (user instanceof Customer) {
             Customer c = (Customer) user;
-            return base + "|" + c.getAddress() + "|" + c.getCompany();
+            return base + "|" + c.getAddress() + "|";
         } else if (user instanceof Staff) {
             Staff s = (Staff) user;
             return base + "|" + s.getDepartment();

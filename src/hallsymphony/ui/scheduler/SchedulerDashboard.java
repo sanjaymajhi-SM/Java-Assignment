@@ -48,8 +48,8 @@ public class SchedulerDashboard extends JFrame {
 
         // ── Top header ──────────────────────────────────────────────────
         add(UIHelper.makeHeader("Scheduler Dashboard",
-            "Logged in as: " + me.getUsername() + "   |   Role: SCHEDULER"),
-            BorderLayout.NORTH);
+                        "Logged in as: " + me.getUsername() + "   |   Role: SCHEDULER"),
+                BorderLayout.NORTH);
 
         // ── Tabs ────────────────────────────────────────────────────────
         JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
@@ -87,10 +87,10 @@ public class SchedulerDashboard extends JFrame {
         JButton btnDelete  = UIHelper.dangerBtn("Delete Selected");
 
         JPanel toolbar = UIHelper.toolbar(
-            UIHelper.boldLabel("Search:"), searchField,
-            btnSearch, btnShowAll,
-            UIHelper.sep(),
-            btnAdd, btnEdit, btnDelete
+                UIHelper.boldLabel("Search:"), searchField,
+                btnSearch, btnShowAll,
+                UIHelper.sep(),
+                btnAdd, btnEdit, btnDelete
         );
         root.add(toolbar, BorderLayout.NORTH);
 
@@ -148,10 +148,10 @@ public class SchedulerDashboard extends JFrame {
                     || h.getHallName().toLowerCase().contains(f)
                     || h.getHallType().toLowerCase().contains(f)) {
                 hallModel.addRow(new Object[]{
-                    h.getHallId(), h.getHallName(), h.getHallType(),
-                    h.getCapacity(),
-                    String.format("%.2f", h.getRatePerHour()),
-                    h.getDescription()
+                        h.getHallId(), h.getHallName(), h.getHallType(),
+                        h.getCapacity(),
+                        String.format("%.2f", h.getRatePerHour()),
+                        h.getDescription()
                 });
             }
         }
@@ -179,7 +179,7 @@ public class SchedulerDashboard extends JFrame {
         Runnable updateHint = () -> {
             String t = (String) typeC.getSelectedItem();
             hint.setText("  Capacity: " + HallFileManager.getCapacityForType(t)
-                + "   Rate: RM " + String.format("%.2f", HallFileManager.getRateForType(t)) + "/hr");
+                    + "   Rate: RM " + String.format("%.2f", HallFileManager.getRateForType(t)) + "/hr");
         };
         typeC.addActionListener(ev -> updateHint.run());
         updateHint.run();
@@ -226,9 +226,9 @@ public class SchedulerDashboard extends JFrame {
                 UIHelper.ok(dlg, "Hall updated successfully.");
             } else {
                 Hall h = new Hall(
-                    hallFM.generateHallId(), name, type,
-                    HallFileManager.getCapacityForType(type),
-                    HallFileManager.getRateForType(type), desc
+                        hallFM.generateHallId(), name, type,
+                        HallFileManager.getCapacityForType(type),
+                        HallFileManager.getRateForType(type), desc
                 );
                 hallFM.addHall(h);
                 UIHelper.ok(dlg, "Hall \"" + name + "\" added successfully.");
@@ -254,8 +254,8 @@ public class SchedulerDashboard extends JFrame {
         JPanel formPanel = new JPanel(new BorderLayout());
         formPanel.setBackground(UIHelper.LIGHT_BG);
         formPanel.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(UIHelper.MID_BLUE, 1),
-            "  Schedule Hall – " + label + "  "));
+                BorderFactory.createLineBorder(UIHelper.MID_BLUE, 1),
+                "  Schedule Hall – " + label + "  "));
 
         JPanel form = new JPanel(new GridBagLayout());
         form.setOpaque(false);
@@ -272,8 +272,8 @@ public class SchedulerDashboard extends JFrame {
         remarkA.setLineWrap(true);
         remarkA.setBorder(BorderFactory.createLineBorder(new Color(180, 200, 230)));
 
-        startF.setText("2025-08-01 08:00");
-        endF.setText("2025-08-31 18:00");
+        startF.setText(java.time.LocalDate.now().toString() + " 08:00");
+        endF.setText(java.time.LocalDate.now().plusMonths(1).toString() + " 18:00");
         startF.setToolTipText("Format: yyyy-MM-dd HH:mm   (08:00 – 18:00)");
         endF.setToolTipText("Format: yyyy-MM-dd HH:mm   (08:00 – 18:00)");
 
@@ -338,8 +338,8 @@ public class SchedulerDashboard extends JFrame {
                 UIHelper.err(this, "Operating hours are 08:00 – 18:00 only."); return;
             }
             HallSchedule hs = new HallSchedule(
-                schedFM.generateScheduleId(), hallId, type,
-                start, end, remark, me.getUserId());
+                    schedFM.generateScheduleId(), hallId, type,
+                    start, end, remark, me.getUserId());
             schedFM.addSchedule(hs);
             refreshScheduleTable(model, type);
             remarkA.setText("");
@@ -364,9 +364,9 @@ public class SchedulerDashboard extends JFrame {
             if (!s.getScheduleType().equals(type)) continue;
             Hall h = hallFM.findById(s.getHallId());
             model.addRow(new Object[]{
-                s.getScheduleId(),
-                h != null ? h.getHallName() : s.getHallId(),
-                s.getStartDateTime(), s.getEndDateTime(), s.getRemarks()
+                    s.getScheduleId(),
+                    h != null ? h.getHallName() : s.getHallId(),
+                    s.getStartDateTime(), s.getEndDateTime(), s.getRemarks()
             });
         }
     }
